@@ -1,0 +1,32 @@
+version: "3"
+services:
+  node-app1:
+    build:  ./app1
+    container_name : node-app1
+    restart: always
+    expose:
+      - "8085"
+    environment:
+      VIRTUAL_HOST: example1.com, www.example1
+
+  node-app2:
+    build:  ./app2
+    container_name : node-app2
+    restart: always
+    expose:
+      - "8086"
+    environment:
+      VIRTUAL_HOST: example2.com, www.example2.com
+
+  node-proxy:
+    build:  ./node-proxy
+    container_name : node-proxy
+    restart : always
+    links:
+        - node-app1
+        - node-app2
+    volumes:
+        -  /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+        - 80:80
+        - 443:443
